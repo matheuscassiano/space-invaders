@@ -9,22 +9,19 @@ function draw(screen, context) {
 
     context.fillStyle = "#1641c4";
     context.fillRect(0, 0, screen.width, screen.height);
-
-    // Player
-    player.draw();
-    shot.draw();
-
-    
 }
 
 function play() {
-    update();
     draw(screen, context);
+    update();
     sound();
     requestAnimationFrame(play)
 }
 
 function update(){
+    player.draw();
+    shot.draw();
+    invaders.draw();
 }
 
 function sound() {
@@ -79,8 +76,38 @@ const shot = {
             context.fillStyle = "white";
             context.fillRect(shot.posX, shot.posY, this.width, this.height);
             shot.posY -= this.velocity;
-        })
+        });
     }
 }
 
+const invaders = {
+    size: 50,
+    invadersRows: 3,
+    invadersCols: 6,
+    gapH: 20,
+    gapV: screen.width / 6,
+    _invaders: [],
+
+    insert: function() {
+        for(let row = 0; row < this.invadersRows; row++) {
+            let invaderNumberPerRow = 0;
+            for(let col = 0; col < this.invadersCols; col++) {
+                this._invaders.push({
+                    posX: col == 0 ? this.gapV + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapV,
+                    posY: row == 0 ? this.gapH + this.size: (row + 1) * (this.gapH + this.size),
+                });
+                invaderNumberPerRow++;
+            }
+        }
+    },
+
+    draw: function() {
+        this._invaders.forEach(invader => {
+            context.fillStyle = "yellow";
+            context.fillRect(invader.posX, invader.posY, this.size, this.size);
+        });
+    }
+}
+
+invaders.insert();
 play();
