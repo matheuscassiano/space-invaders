@@ -11,20 +11,21 @@ function draw(screen, context) {
     context.fillRect(0, 0, screen.width, screen.height);
 
     // Player
-    player.draw();
-    shot.draw();
+    
 
     
 }
 
 function play() {
-    update();
     draw(screen, context);
+    update();
     sound();
     requestAnimationFrame(play)
 }
 
 function update(){
+    player.draw();
+    shot.draw();
 }
 
 function sound() {
