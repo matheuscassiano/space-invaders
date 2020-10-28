@@ -15,7 +15,7 @@ function play() {
     draw(screen, context);
     update();
     sound();
-    requestAnimationFrame(play)
+    requestAnimationFrame(play);
 }
 
 function update(){
@@ -31,10 +31,14 @@ function sound() {
 function actions(key) {
     switch(key) {
         case 'ArrowLeft':
-            player.posX -= player.velocity;
+            if (player.posX > 20) {
+                player.posX -= player.velocity;
+            }
             break;
         case 'ArrowRight':
-            player.posX += player.velocity;
+            if (player.posX < screen.width - 20 - player.width) {
+                player.posX += player.velocity;
+            }
             break;
         case ' ':
             player.shot();
@@ -45,7 +49,7 @@ function actions(key) {
 const player = {
     width: 50,
     height: 30,
-    posX: 20,
+    posX: screen.width + 25,
     velocity: 10,
 
     shot: function() {
