@@ -102,10 +102,9 @@ const shot = {
 const invaders = {
     size: 50,
     invadersRows: 3,
-    invadersCols: 6,
+    invadersCols: 7,
     gapH: 20,
-    gapV: screen.width / 6,
-    velocity: 2.5,
+    gapV: screen.width / 7,
     direction: 'left',
     _invaderBlock: {
         posX: 0,
@@ -113,6 +112,17 @@ const invaders = {
         width: 0,
         height: 0
     },
+    velocity: 0,
+    velocitys: [
+        5.5,
+        5,
+        4.5,
+        3.5,
+        2.5,
+        2,
+        1.5,
+        1,
+    ],
     _invaders: [],
 
     insert: function() {
@@ -131,27 +141,32 @@ const invaders = {
                 invaderNumberPerRow++;
             }
         }
-
     },
     
     draw: function() {
+        let invaderNumber = 0;
         this._invaders.forEach(invader => {
             context.fillStyle = "yellow";
             context.fillRect(invader.posX, invader.posY, this.size, this.size);
+            invaderNumber++;
         });
         this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
         this._invaderBlock.posY = Math.min(...this._invaders.map(({posY}) => posY));
         this._invaderBlock.width = Math.max(...this._invaders.map(({posX}) => posX)) - Math.min(...this._invaders.map(({posX}) => posX)) + this.size;
         this._invaderBlock.height = Math.min(...this._invaders.map(({posY}) => posY)) - Math.min(...this._invaders.map(({posY}) => posY));
 
+        if(invaderNumber % this.invadersRows == 0) {
+            this.velocity = this.velocitys[invaderNumber / this.invadersRows];
+        }
+
         if (this._invaderBlock.posX <= 10) {
             this.direction = 'right';
-            this._invaderBlock.posY += this.velocity;
-            this._invaders.forEach(invader => invader.posY += this.velocity);
+            this._invaderBlock.posY += 10;
+            this._invaders.forEach(invader => invader.posY += 10);
         } else if ((this._invaderBlock.posX + this._invaderBlock.width) >= screen.width - 10){
             this.direction = 'left';
-            this._invaderBlock.posY += this.velocity;
-            this._invaders.forEach(invader => invader.posY += this.velocity);
+            this._invaderBlock.posY += 10;
+            this._invaders.forEach(invader => invader.posY += 10);
         }
 
         if (this.direction === 'left') {
