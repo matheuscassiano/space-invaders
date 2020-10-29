@@ -7,8 +7,9 @@ function draw(screen, context) {
     screen.width = 700;
     screen.height = 700;
 
-    context.fillStyle = "#1641c4";
-    context.fillRect(0, 0, screen.width, screen.height);
+    const background = document.createElement('img');
+    background.src = `./src/assets/images/background.png`;
+    context.drawImage(background, 0, 0, screen.width, screen.height);
 }
 
 function play() {
@@ -134,6 +135,7 @@ const invaders = {
                 this._invaders.push({
                     col,
                     row,
+                    sprite: getRandomInt(1, 2),
                     size: this.size,
                     posX: col == 0 ? this.gapV + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapV,
                     posY: row == 0 ? this.gapH + this.size: (row + 1) * (this.gapH + this.size),
@@ -148,7 +150,7 @@ const invaders = {
         let invaderNumber = 0;
         this._invaders.forEach(invader => {
             const invaderSprite = document.createElement('img');
-            invaderSprite.src = './src/assets/images/sprite01.png';
+            invaderSprite.src = `./src/assets/images/sprite0${invader.sprite}.png`;
             context.drawImage(invaderSprite, invader.posX, invader.posY, this.size, this.size);
             invaderNumber++;
         });
@@ -180,6 +182,12 @@ const invaders = {
             this._invaders.forEach(invader => invader.posX += this.velocity);
         }
     }
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 invaders.insert();
