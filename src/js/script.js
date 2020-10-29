@@ -105,8 +105,8 @@ const invaders = {
     size: 50,
     invadersRows: 3,
     invadersCols: 7,
-    gapH: 20,
-    gapV: screen.width / 7,
+    gapV: 20,
+    gapH: screen.width / 7,
     direction: 'left',
     _invaderBlock: {
         posX: 0,
@@ -137,8 +137,8 @@ const invaders = {
                     row,
                     sprite: getRandomInt(1, 2),
                     size: this.size,
-                    posX: col == 0 ? this.gapV + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapV,
-                    posY: row == 0 ? this.gapH + this.size: (row + 1) * (this.gapH + this.size),
+                    posX: col == 0 ? this.gapH + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapH,
+                    posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 110,
                 });
                 invaderNumber++;
                 invaderNumberPerRow++;
