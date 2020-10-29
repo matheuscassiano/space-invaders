@@ -8,7 +8,9 @@ const status = {
 }
 
 const sounds = {
-    backgoundSound: new Audio('./src/assets/audio/background.mp3')
+    backgroundSound: new Audio('./src/assets/audio/background.mp3'),
+    shotSound: new Audio('./src/assets/audio/shot.mp3'),
+    explosionSound: new Audio('./src/assets/audio/explosion.mp3'),
 }
 
 document.addEventListener('keydown', e => actions(e.key));
@@ -48,18 +50,22 @@ function update(){
 
 function sound() {
     if(status.play){
-        sounds.backgoundSound.play();
-        sounds.backgoundSound.addEventListener('ended', () => {
-            sounds.backgoundSound.play();
+        sounds.backgroundSound.play();
+        sounds.backgroundSound.addEventListener('ended', () => {
+            sounds.backgroundSound.play();
         });
     } else {
-        sounds.backgoundSound.pause();
+        sounds.backgroundSound.pause();
     }
 
     if (status.mute) {
-        sounds.backgoundSound.muted = true;
+        sounds.shotSound.muted = true;
+        sounds.explosionSound.muted = true;
+        sounds.backgroundSound.muted = true;
     } else {
-        sounds.backgoundSound.muted = false;
+        sounds.shotSound.muted = false;
+        sounds.explosionSound.muted = false;
+        sounds.backgroundSound.muted = false;
     }
 }
 
@@ -113,6 +119,7 @@ const shot = {
             posX: player.posX + (player.width / 2),
             posY: player.posY,
         });
+        sounds.shotSound.play();
     },
 
     draw: function() {
@@ -131,7 +138,9 @@ const shot = {
                 if (invaderBottom > shot.posY && invader.posY < shot.posY &&
                     invaderRight > shot.posX && invader.posX < shot.posX) {
                     status.score += invader.value;
+                    sounds.explosionSound.play();
                     this._shots.splice(shot, 1);
+
                     let key = invaders._invaders.indexOf(invader);
                     invaders._invaders.splice(key, 1);
                 }
