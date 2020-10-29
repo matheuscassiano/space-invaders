@@ -1,17 +1,22 @@
 const screen = document.querySelector("#space-invaders");
 const context = screen.getContext("2d");
+
 const status = {
-    play: true
+    play: false,
+    score: 0,
 }
 
 document.addEventListener('keydown', e => actions(e.key));
+document.querySelector('#pause').addEventListener('click', pause);
+
+function pause() {
+    status.play = !status.play
+    play();
+}
 
 function draw(screen, context) {
     screen.width = 700;
     screen.height = 700;
-
-    const background = document.createElement('img');
-    background.src = `./src/assets/images/background.png`;
     context.drawImage(background, 0, 0, screen.width, screen.height);
 }
 
@@ -28,6 +33,7 @@ function update(){
     player.draw();
     shot.draw();
     invaders.draw();
+    document.querySelector('#score').innerHTML = status.score;
 }
 
 function sound() {
@@ -60,7 +66,9 @@ const player = {
     velocity: 10,
 
     shot: function() {
-        shot.insert();
+        if(status.play){
+            shot.insert();
+        }
     },
 
     draw: function() {
@@ -99,6 +107,7 @@ const shot = {
                 let invaderRight = invader.posX + invader.size;
                 if (invaderBottom > shot.posY && invader.posY < shot.posY &&
                     invaderRight > shot.posX && invader.posX < shot.posX) {
+                    status.score += invader.value;
                     this._shots.splice(shot, 1);
                     let key = invaders._invaders.indexOf(invader);
                     invaders._invaders.splice(key, 1);
@@ -121,6 +130,7 @@ const invaders = {
         width: 0,
         height: 0
     },
+    value: 0,
     velocity: 0,
     velocitys: [
         5.5,
@@ -141,10 +151,12 @@ const invaders = {
         for(let row = 0; row < this.invadersRows; row++) {
             let invaderNumberPerRow = 0;
             for(let col = 0; col < this.invadersCols; col++) {
+                const random =  getRandomInt(1, 2);
                 this._invaders.push({
                     col,
                     row,
-                    sprite: getRandomInt(1, 2),
+                    sprite: random,
+                    value: random * 10,
                     size: this.size,
                     posX: col == 0 ? this.gapH + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapH,
                     posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 120,
@@ -162,6 +174,9 @@ const invaders = {
             context.drawImage(invaderSprite, invader.posX, invader.posY, this.size, this.size);
             invaderNumber++;
         });
+        if (this._invaders.length <= 0) {
+            invaders.insert();
+        }
         this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
         this._invaderBlock.posY = Math.min(...this._invaders.map(({posY}) => posY));
         this._invaderBlock.width = Math.max(...this._invaders.map(({posX}) => posX)) - Math.min(...this._invaders.map(({posX}) => posX)) + this.size;
@@ -201,4 +216,4 @@ function getRandomInt(min, max) {
 }
 
 invaders.insert();
-play();
+play()
