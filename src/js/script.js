@@ -1,5 +1,6 @@
 const screen = document.querySelector("#space-invaders");
 const context = screen.getContext("2d");
+
 const status = {
     play: false,
     score: 0,
@@ -16,10 +17,7 @@ function pause() {
 function draw(screen, context) {
     screen.width = 700;
     screen.height = 700;
-    const background = document.createElement('img');
-    background.src = `./src/assets/images/background.png`;
     context.drawImage(background, 0, 0, screen.width, screen.height);
-    console.log('draw')
 }
 
 function play() {
@@ -215,4 +213,4 @@ function getRandomInt(min, max) {
 }
 
 invaders.insert();
-play();
+play()
