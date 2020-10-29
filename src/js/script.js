@@ -174,6 +174,9 @@ const invaders = {
             context.drawImage(invaderSprite, invader.posX, invader.posY, this.size, this.size);
             invaderNumber++;
         });
+        if (this._invaders.length <= 0) {
+            invaders.insert();
+        }
         this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
         this._invaderBlock.posY = Math.min(...this._invaders.map(({posY}) => posY));
         this._invaderBlock.width = Math.max(...this._invaders.map(({posX}) => posX)) - Math.min(...this._invaders.map(({posX}) => posX)) + this.size;
