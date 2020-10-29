@@ -7,8 +7,9 @@ function draw(screen, context) {
     screen.width = 700;
     screen.height = 700;
 
-    context.fillStyle = "#1641c4";
-    context.fillRect(0, 0, screen.width, screen.height);
+    const background = document.createElement('img');
+    background.src = `./src/assets/images/background.png`;
+    context.drawImage(background, 0, 0, screen.width, screen.height);
 }
 
 function play() {
@@ -48,7 +49,7 @@ function actions(key) {
 
 const player = {
     width: 50,
-    height: 30,
+    height: 40,
     posX: screen.width + 25,
     velocity: 10,
 
@@ -57,8 +58,9 @@ const player = {
     },
 
     draw: function() {
-        context.fillStyle = "white";
-        context.fillRect(this.posX, (screen.height - 30 - this.height), this.width, this.height);
+        const playerSprite = document.createElement('img');
+        playerSprite.src = './src/assets/images/player.png';
+        context.drawImage(playerSprite, this.posX, screen.height - 30 - this.height, this.width, this.height);
     }
 }
 
@@ -100,11 +102,11 @@ const shot = {
 }
 
 const invaders = {
-    size: 50,
-    invadersRows: 3,
-    invadersCols: 7,
-    gapH: 20,
-    gapV: screen.width / 7,
+    size: 30,
+    invadersRows: 4,
+    invadersCols: 10,
+    gapV: 20,
+    gapH: screen.width / 10,
     direction: 'left',
     _invaderBlock: {
         posX: 0,
@@ -117,7 +119,10 @@ const invaders = {
         5.5,
         5,
         4.5,
+        4.2,
+        4,
         3.5,
+        3,
         2.5,
         2,
         1.5,
@@ -126,18 +131,17 @@ const invaders = {
     _invaders: [],
 
     insert: function() {
-        let invaderNumber = 0;
         for(let row = 0; row < this.invadersRows; row++) {
             let invaderNumberPerRow = 0;
             for(let col = 0; col < this.invadersCols; col++) {
                 this._invaders.push({
                     col,
                     row,
+                    sprite: getRandomInt(1, 2),
                     size: this.size,
-                    posX: col == 0 ? this.gapV + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapV,
-                    posY: row == 0 ? this.gapH + this.size: (row + 1) * (this.gapH + this.size),
+                    posX: col == 0 ? this.gapH + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapH,
+                    posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 110,
                 });
-                invaderNumber++;
                 invaderNumberPerRow++;
             }
         }
@@ -146,8 +150,9 @@ const invaders = {
     draw: function() {
         let invaderNumber = 0;
         this._invaders.forEach(invader => {
-            context.fillStyle = "yellow";
-            context.fillRect(invader.posX, invader.posY, this.size, this.size);
+            const invaderSprite = document.createElement('img');
+            invaderSprite.src = `./src/assets/images/sprite0${invader.sprite}.png`;
+            context.drawImage(invaderSprite, invader.posX, invader.posY, this.size, this.size);
             invaderNumber++;
         });
         this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
@@ -178,6 +183,12 @@ const invaders = {
             this._invaders.forEach(invader => invader.posX += this.velocity);
         }
     }
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 invaders.insert();
