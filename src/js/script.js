@@ -1,5 +1,8 @@
 const screen = document.querySelector("#space-invaders");
 const context = screen.getContext("2d");
+const status = {
+    play: true
+}
 
 document.addEventListener('keydown', e => actions(e.key));
 
@@ -16,7 +19,9 @@ function play() {
     draw(screen, context);
     update();
     sound();
-    requestAnimationFrame(play);
+    if(status.play){
+        requestAnimationFrame(play);
+    }
 }
 
 function update(){
@@ -51,6 +56,7 @@ const player = {
     width: 50,
     height: 40,
     posX: screen.width + 25,
+    posY: 0,
     velocity: 10,
 
     shot: function() {
@@ -58,14 +64,15 @@ const player = {
     },
 
     draw: function() {
+        this.posY = screen.height - 30 - this.height;
         const playerSprite = document.createElement('img');
         playerSprite.src = './src/assets/images/player.png';
-        context.drawImage(playerSprite, this.posX, screen.height - 30 - this.height, this.width, this.height);
+        context.drawImage(playerSprite, this.posX, this.posY, this.width, this.height);
     }
 }
 
 const shot = {
-    width: 5,
+    width: 1,
     height: 15,
     velocity: 20,
     _shots: [],
@@ -73,7 +80,7 @@ const shot = {
     insert: function() {
         this._shots.push({
             posX: player.posX + (player.width / 2),
-            posY: screen.height - 30 - player.height,
+            posY: player.posY,
         });
     },
 
@@ -103,7 +110,7 @@ const shot = {
 
 const invaders = {
     size: 40,
-    invadersRows: 4,
+    invadersRows: 5,
     invadersCols: 8,
     gapV: 20,
     gapH: screen.width / 8,
@@ -158,7 +165,7 @@ const invaders = {
         this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
         this._invaderBlock.posY = Math.min(...this._invaders.map(({posY}) => posY));
         this._invaderBlock.width = Math.max(...this._invaders.map(({posX}) => posX)) - Math.min(...this._invaders.map(({posX}) => posX)) + this.size;
-        this._invaderBlock.height = Math.min(...this._invaders.map(({posY}) => posY)) - Math.min(...this._invaders.map(({posY}) => posY));
+        this._invaderBlock.height = Math.max(...this._invaders.map(({posY}) => posY)) - Math.min(...this._invaders.map(({posY}) => posY)) + this.size;
 
         if(invaderNumber % this.invadersRows == 0) {
             this.velocity = this.velocitys[invaderNumber / this.invadersRows];
@@ -172,6 +179,8 @@ const invaders = {
             this.direction = 'left';
             this._invaderBlock.posY += 10;
             this._invaders.forEach(invader => invader.posY += 10);
+        } else if ((this._invaderBlock.posY + this._invaderBlock.height) == player.posY) {
+            status.play = false;
         }
 
         if (this.direction === 'left') {

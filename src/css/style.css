@@ -2,7 +2,7 @@ body {
     margin: 0;
 }
 
-#game {
+body {
     width: 100%;
     height: 100vh;
     display: flex;
@@ -10,12 +10,24 @@ body {
     justify-content: center;
 }
 
-#space-invaders {
+#game {
     width: 700px;
     height: 700px;
+}
+
+#info {
+    width: 100%;
+    height: 3em;
+    background: #151922;
+    border-radius: 10px 10px 0 0;
+}
+
+#space-invaders {
+    width: 100%;
+    height: 100%;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     image-rendering: -moz-crisp-edges;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
 }
