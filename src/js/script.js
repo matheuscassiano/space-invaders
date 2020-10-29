@@ -4,14 +4,24 @@ const context = screen.getContext("2d");
 const status = {
     play: false,
     score: 0,
+    mute: false,
+}
+
+const sounds = {
+    backgoundSound: new Audio('./src/assets/audio/background.mp3')
 }
 
 document.addEventListener('keydown', e => actions(e.key));
 document.querySelector('#pause').addEventListener('click', pause);
+document.querySelector('#mute').addEventListener('click', mute);
 
 function pause() {
     status.play = !status.play
     play();
+}
+
+function mute() {
+    status.mute = !status.mute;
 }
 
 function draw(screen, context) {
@@ -37,7 +47,20 @@ function update(){
 }
 
 function sound() {
+    if(status.play){
+        sounds.backgoundSound.play();
+        sounds.backgoundSound.addEventListener('ended', () => {
+            sounds.backgoundSound.play();
+        });
+    } else {
+        sounds.backgoundSound.pause();
+    }
 
+    if (status.mute) {
+        sounds.backgoundSound.muted = true;
+    } else {
+        sounds.backgoundSound.muted = false;
+    }
 }
 
 function actions(key) {
@@ -214,6 +237,9 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function start() {
+    invaders.insert();
+    play()
+}
 
-invaders.insert();
-play()
+start();
