@@ -67,7 +67,7 @@ const player = {
 const shot = {
     width: 5,
     height: 15,
-    velocity: 30,
+    velocity: 20,
     _shots: [],
 
     insert: function() {
@@ -102,11 +102,11 @@ const shot = {
 }
 
 const invaders = {
-    size: 30,
+    size: 40,
     invadersRows: 4,
-    invadersCols: 10,
+    invadersCols: 8,
     gapV: 20,
-    gapH: screen.width / 10,
+    gapH: screen.width / 8,
     direction: 'left',
     _invaderBlock: {
         posX: 0,
@@ -140,7 +140,7 @@ const invaders = {
                     sprite: getRandomInt(1, 2),
                     size: this.size,
                     posX: col == 0 ? this.gapH + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapH,
-                    posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 110,
+                    posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 120,
                 });
                 invaderNumberPerRow++;
             }
