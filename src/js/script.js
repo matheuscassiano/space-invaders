@@ -48,7 +48,7 @@ function actions(key) {
 
 const player = {
     width: 50,
-    height: 30,
+    height: 40,
     posX: screen.width + 25,
     velocity: 10,
 
@@ -57,8 +57,9 @@ const player = {
     },
 
     draw: function() {
-        context.fillStyle = "white";
-        context.fillRect(this.posX, (screen.height - 30 - this.height), this.width, this.height);
+        const playerSprite = document.createElement('img');
+        playerSprite.src = './src/assets/images/player.png';
+        context.drawImage(playerSprite, this.posX, screen.height - 30 - this.height, this.width, this.height);
     }
 }
 
@@ -146,8 +147,9 @@ const invaders = {
     draw: function() {
         let invaderNumber = 0;
         this._invaders.forEach(invader => {
-            context.fillStyle = "yellow";
-            context.fillRect(invader.posX, invader.posY, this.size, this.size);
+            const invaderSprite = document.createElement('img');
+            invaderSprite.src = './src/assets/images/sprite01.png';
+            context.drawImage(invaderSprite, invader.posX, invader.posY, this.size, this.size);
             invaderNumber++;
         });
         this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
