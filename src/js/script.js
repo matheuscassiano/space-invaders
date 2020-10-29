@@ -105,9 +105,18 @@ const invaders = {
     invadersCols: 6,
     gapH: 20,
     gapV: screen.width / 6,
+    velocity: 2.5,
+    direction: 'left',
+    _invaderBlock: {
+        posX: 0,
+        posY: 0,
+        width: 0,
+        height: 0
+    },
     _invaders: [],
 
     insert: function() {
+        let invaderNumber = 0;
         for(let row = 0; row < this.invadersRows; row++) {
             let invaderNumberPerRow = 0;
             for(let col = 0; col < this.invadersCols; col++) {
@@ -118,16 +127,41 @@ const invaders = {
                     posX: col == 0 ? this.gapV + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapV,
                     posY: row == 0 ? this.gapH + this.size: (row + 1) * (this.gapH + this.size),
                 });
+                invaderNumber++;
                 invaderNumberPerRow++;
             }
         }
-    },
 
+    },
+    
     draw: function() {
         this._invaders.forEach(invader => {
             context.fillStyle = "yellow";
             context.fillRect(invader.posX, invader.posY, this.size, this.size);
         });
+        this._invaderBlock.posX = Math.min(...this._invaders.map(({posX}) => posX));
+        this._invaderBlock.posY = Math.min(...this._invaders.map(({posY}) => posY));
+        this._invaderBlock.width = Math.max(...this._invaders.map(({posX}) => posX)) - Math.min(...this._invaders.map(({posX}) => posX)) + this.size;
+        this._invaderBlock.height = Math.min(...this._invaders.map(({posY}) => posY)) - Math.min(...this._invaders.map(({posY}) => posY));
+
+        if (this._invaderBlock.posX <= 10) {
+            this.direction = 'right';
+            this._invaderBlock.posY += this.velocity;
+            this._invaders.forEach(invader => invader.posY += this.velocity);
+        } else if ((this._invaderBlock.posX + this._invaderBlock.width) >= screen.width - 10){
+            this.direction = 'left';
+            this._invaderBlock.posY += this.velocity;
+            this._invaders.forEach(invader => invader.posY += this.velocity);
+        }
+
+        if (this.direction === 'left') {
+            this._invaderBlock.posX -= this.velocity;
+            this._invaders.forEach(invader => invader.posX -= this.velocity);
+
+        } else if (this.direction === 'right') {
+            this._invaderBlock.posX += this.velocity;
+            this._invaders.forEach(invader => invader.posX += this.velocity);
+        }
     }
 }
 
