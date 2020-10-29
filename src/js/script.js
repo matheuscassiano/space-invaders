@@ -65,7 +65,7 @@ const player = {
 const shot = {
     width: 5,
     height: 15,
-    velocity: 20,
+    velocity: 30,
     _shots: [],
 
     insert: function() {
@@ -80,6 +80,21 @@ const shot = {
             context.fillStyle = "white";
             context.fillRect(shot.posX, shot.posY, this.width, this.height);
             shot.posY -= this.velocity;
+
+            if (shot.posY <= 10) {
+                this._shots.splice(shot, 1);
+            }
+
+            invaders._invaders.forEach(invader => {
+                let invaderBottom = invader.posY + invader.size;
+                let invaderRight = invader.posX + invader.size;
+                if (invaderBottom > shot.posY && invader.posY < shot.posY &&
+                    invaderRight > shot.posX && invader.posX < shot.posX) {
+                    this._shots.splice(shot, 1);
+                    let key = invaders._invaders.indexOf(invader);
+                    invaders._invaders.splice(key, 1);
+                }
+            });
         });
     }
 }
@@ -97,6 +112,9 @@ const invaders = {
             let invaderNumberPerRow = 0;
             for(let col = 0; col < this.invadersCols; col++) {
                 this._invaders.push({
+                    col,
+                    row,
+                    size: this.size,
                     posX: col == 0 ? this.gapV + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapV,
                     posY: row == 0 ? this.gapH + this.size: (row + 1) * (this.gapH + this.size),
                 });
