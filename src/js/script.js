@@ -102,11 +102,11 @@ const shot = {
 }
 
 const invaders = {
-    size: 50,
-    invadersRows: 3,
-    invadersCols: 7,
+    size: 30,
+    invadersRows: 4,
+    invadersCols: 10,
     gapV: 20,
-    gapH: screen.width / 7,
+    gapH: screen.width / 10,
     direction: 'left',
     _invaderBlock: {
         posX: 0,
@@ -119,7 +119,10 @@ const invaders = {
         5.5,
         5,
         4.5,
+        4.2,
+        4,
         3.5,
+        3,
         2.5,
         2,
         1.5,
@@ -128,7 +131,6 @@ const invaders = {
     _invaders: [],
 
     insert: function() {
-        let invaderNumber = 0;
         for(let row = 0; row < this.invadersRows; row++) {
             let invaderNumberPerRow = 0;
             for(let col = 0; col < this.invadersCols; col++) {
@@ -140,7 +142,6 @@ const invaders = {
                     posX: col == 0 ? this.gapH + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapH,
                     posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 110,
                 });
-                invaderNumber++;
                 invaderNumberPerRow++;
             }
         }
