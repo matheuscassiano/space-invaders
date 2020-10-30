@@ -12,9 +12,15 @@ export default function renderScreen(screen, game, requestAnimationFrame, curren
 
     for(const shotId in game.state.shots.list){
         const shot = game.state.shots.list[shotId];
+        shot.posY -= shot.velocity;
         context.fillStyle = 'white';
         context.fillRect(shot.posX, shot.posY, shot.width, shot.height);
-        shot.posY -= shot.velocity;
-        game.setState(shot)
+        
+        if (shot.posY <= 0){
+            game.removeShot(shotId);
+        }else {
+            game.checkForInvaderCollision(shotId);
+            game.setState(shot);
+        }
     }
 }

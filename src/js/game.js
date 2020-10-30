@@ -62,6 +62,10 @@ export default function createGame(){
         }
     }
 
+    function removeInvader(invaderId) {
+        delete state.invaders.list[invaderId]
+    }
+
     function addShot() {
         state.shots.list.push({
             posX: state.player.posX + (state.player.width / 2),
@@ -70,6 +74,10 @@ export default function createGame(){
             height: state.shots.height,
             velocity: state.shots.velocity
         });
+    }
+
+    function removeShot(shotId) {
+        delete state.shots.list[shotId]
     }
 
     function movePlayer(command){
@@ -85,17 +93,28 @@ export default function createGame(){
                     state.player.posX -= state.player.velocity
                 }
             },
-            z() {
-                addShot();
-                console.log(state.shots.list)
-            }
+            z() { addShot() }
         }
 
         const keyPressed = command.keyPressed;
         const moveFunction = acceptedMoves[keyPressed];
         if (moveFunction && state.playing) {
             moveFunction()
-            // checkForFruitCollision(playerId)
+        }
+    }
+            
+    function checkForInvaderCollision(shotId) {
+        const shot = state.shots.list[shotId];
+        for(const invaderId in state.invaders.list){
+            const invader = state.invaders.list[invaderId];            
+            let invaderBottom = invader.posY + state.invaders.options.size;
+            let invaderRight = invader.posX + state.invaders.options.size;
+            
+            if (invaderBottom > shot.posY && invader.posY < shot.posY &&
+                invaderRight > shot.posX && invader.posX < shot.posX) {
+                removeShot(shotId)
+                removeInvader(invaderId)
+            }
         }
     }
 
@@ -139,6 +158,8 @@ export default function createGame(){
         sound,
         addInvader,
         movePlayer,
-        setState
+        setState,
+        removeShot,
+        checkForInvaderCollision
     }
 }
