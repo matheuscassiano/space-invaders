@@ -9,4 +9,12 @@ export default function renderScreen(screen, game, requestAnimationFrame, curren
         const invader = game.state.invaders.list[invaderId];
         context.drawImage(invaderSprite, invader.posX, invader.posY, invader.size, invader.size);
     }
+
+    for(const shotId in game.state.shots.list){
+        const shot = game.state.shots.list[shotId];
+        context.fillStyle = 'white';
+        context.fillRect(shot.posX, shot.posY, shot.width, shot.height);
+        shot.posY -= shot.velocity;
+        game.setState(shot)
+    }
 }

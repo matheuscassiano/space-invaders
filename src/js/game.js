@@ -13,6 +13,12 @@ export default function createGame(){
             posY: 700 - 70,
             velocity: 10,
         },
+        shots: {
+            width: 1,
+            height: 15,
+            velocity: 20,
+            list: [],
+        },
         invaders: {
             direction: 'left',
             options: {
@@ -31,6 +37,10 @@ export default function createGame(){
             shotSound: new Audio('./src/assets/audio/shot.mp3'),
             explosionSound: new Audio('./src/assets/audio/explosion.mp3'),
         }
+    }
+
+    function setState(newState){
+        Object.assign(state, newState)
     }
 
     function addInvader() {
@@ -52,6 +62,16 @@ export default function createGame(){
         }
     }
 
+    function addShot() {
+        state.shots.list.push({
+            posX: state.player.posX + (state.player.width / 2),
+            posY: state.player.posY,
+            width: state.shots.width,
+            height: state.shots.height,
+            velocity: state.shots.velocity
+        });
+    }
+
     function movePlayer(command){
         const acceptedMoves = {
             ArrowRight() {
@@ -66,7 +86,8 @@ export default function createGame(){
                 }
             },
             z() {
-                
+                addShot();
+                console.log(state.shots.list)
             }
         }
 
@@ -117,6 +138,7 @@ export default function createGame(){
         update,
         sound,
         addInvader,
-        movePlayer
+        movePlayer,
+        setState
     }
 }
