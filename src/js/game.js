@@ -1,6 +1,7 @@
 
 export default function createGame(){
     const state = {
+        playing: true,
         screen: {
             width: 700,
             height: 700,
@@ -51,6 +52,32 @@ export default function createGame(){
         }
     }
 
+    function movePlayer(command){
+        const acceptedMoves = {
+            ArrowRight() {
+                if (state.player.posX + state.player.width + 10 < state.screen.width) {
+                    state.player.posX = state.player.posX + state.player.velocity
+                }
+            },
+
+            ArrowLeft() {
+                if (state.player.posX - 10 >= 0) {
+                    state.player.posX -= state.player.velocity
+                }
+            },
+            z() {
+                
+            }
+        }
+
+        const keyPressed = command.keyPressed;
+        const moveFunction = acceptedMoves[keyPressed];
+        if (moveFunction && state.playing) {
+            moveFunction()
+            // checkForFruitCollision(playerId)
+        }
+    }
+
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -89,6 +116,7 @@ export default function createGame(){
         state,
         update,
         sound,
-        addInvader
+        addInvader,
+        movePlayer
     }
 }

@@ -1,7 +1,12 @@
 import createGame from './game.js';
 import renderScreen  from './render-screen.js';
+import createKeyboardListener from './keyboard-listener.js'
+
+const game = createGame();
+const keyboardListener = createKeyboardListener(document);
 
 const screen = document.querySelector("#space-invaders");
+
 screen.width = 700;
 screen.height = 700;
 
@@ -25,7 +30,7 @@ function mute() {
     status.mute = !status.mute;
 }
 
-const game = createGame();
+
 
 function play() {
     renderScreen(screen, game);
@@ -216,6 +221,7 @@ function getRandomInt(min, max) {
 function start() {
     // invaders.insert();
     game.addInvader();
+    keyboardListener.subscribe(game.movePlayer)
     play()
 }
 
