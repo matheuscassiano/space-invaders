@@ -1,16 +1,14 @@
+import createGame from './game.js';
+import renderScreen  from './render-screen.js';
+
 const screen = document.querySelector("#space-invaders");
-const context = screen.getContext("2d");
+screen.width = 700;
+screen.height = 700;
 
 const status = {
     play: false,
     score: 0,
     mute: false,
-}
-
-const sounds = {
-    backgroundSound: new Audio('./src/assets/audio/background.mp3'),
-    shotSound: new Audio('./src/assets/audio/shot.mp3'),
-    explosionSound: new Audio('./src/assets/audio/explosion.mp3'),
 }
 
 document.addEventListener('keydown', e => actions(e.key));
@@ -22,50 +20,19 @@ function pause() {
     play();
 }
 
+
 function mute() {
     status.mute = !status.mute;
 }
 
-function draw(screen, context) {
-    screen.width = 700;
-    screen.height = 700;
-    context.drawImage(background, 0, 0, screen.width, screen.height);
-}
+const game = createGame();
 
 function play() {
-    draw(screen, context);
-    update();
-    sound();
+    renderScreen(screen, game);
+    game.update();
+    game.sound();
     if(status.play){
         requestAnimationFrame(play);
-    }
-}
-
-function update(){
-    player.draw();
-    shot.draw();
-    invaders.draw();
-    document.querySelector('#score').innerHTML = status.score;
-}
-
-function sound() {
-    if(status.play){
-        sounds.backgroundSound.play();
-        sounds.backgroundSound.addEventListener('ended', () => {
-            sounds.backgroundSound.play();
-        });
-    } else {
-        sounds.backgroundSound.pause();
-    }
-
-    if (status.mute) {
-        sounds.shotSound.muted = true;
-        sounds.explosionSound.muted = true;
-        sounds.backgroundSound.muted = true;
-    } else {
-        sounds.shotSound.muted = false;
-        sounds.explosionSound.muted = false;
-        sounds.backgroundSound.muted = false;
     }
 }
 
@@ -247,7 +214,8 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 function start() {
-    invaders.insert();
+    // invaders.insert();
+    game.addInvader();
     play()
 }
 
