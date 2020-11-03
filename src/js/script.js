@@ -11,131 +11,43 @@ screen.width = 700;
 screen.height = 700;
 
 const status = {
-    play: false,
     score: 0,
-    mute: false,
 }
 
-document.addEventListener('keydown', e => actions(e.key));
 document.querySelector('#pause').addEventListener('click', pause);
 document.querySelector('#mute').addEventListener('click', mute);
 
 function pause() {
-    status.play = !status.play
+    game.state.playing = !game.state.playing
     play();
 }
 
-
 function mute() {
-    status.mute = !status.mute;
+    game.state.muted = !game.state.mute;
 }
-
-
 
 function play() {
     renderScreen(screen, game);
     game.update();
     game.sound();
-    if(status.play){
+    if(game.state.playing){
         requestAnimationFrame(play);
     }
 }
 
-function actions(key) {
-    switch(key) {
-        case 'ArrowLeft':
-            if (player.posX > 20) {
-                player.posX -= player.velocity;
-            }
-            break;
-        case 'ArrowRight':
-            if (player.posX < screen.width - 20 - player.width) {
-                player.posX += player.velocity;
-            }
-            break;
-        case ' ':
-            player.shot();
-            break;
-    }
-}
-
-const player = {
-    width: 50,
-    height: 40,
-    posX: screen.width + 25,
-    posY: 0,
-    velocity: 10,
-
-    shot: function() {
-        if(status.play){
-            shot.insert();
-        }
-    },
-
-    draw: function() {
-        this.posY = screen.height - 30 - this.height;
-        const playerSprite = document.createElement('img');
-        playerSprite.src = './src/assets/images/player.png';
-        context.drawImage(playerSprite, this.posX, this.posY, this.width, this.height);
-    }
-}
-
 const shot = {
-    width: 1,
-    height: 15,
-    velocity: 20,
-    _shots: [],
-
     insert: function() {
-        this._shots.push({
-            posX: player.posX + (player.width / 2),
-            posY: player.posY,
-        });
         sounds.shotSound.play();
-    },
-
-    draw: function() {
-        this._shots.forEach(shot => {
-            context.fillStyle = "white";
-            context.fillRect(shot.posX, shot.posY, this.width, this.height);
-            shot.posY -= this.velocity;
-
-            if (shot.posY <= 10) {
-                this._shots.splice(shot, 1);
-            }
-
-            invaders._invaders.forEach(invader => {
-                let invaderBottom = invader.posY + invader.size;
-                let invaderRight = invader.posX + invader.size;
-                if (invaderBottom > shot.posY && invader.posY < shot.posY &&
-                    invaderRight > shot.posX && invader.posX < shot.posX) {
-                    status.score += invader.value;
-                    sounds.explosionSound.play();
-                    this._shots.splice(shot, 1);
-
-                    let key = invaders._invaders.indexOf(invader);
-                    invaders._invaders.splice(key, 1);
-                }
-            });
-        });
     }
 }
 
 const invaders = {
-    size: 40,
-    invadersRows: 5,
-    invadersCols: 8,
-    gapV: 20,
-    gapH: screen.width / 8,
-    direction: 'left',
     _invaderBlock: {
         posX: 0,
         posY: 0,
         width: 0,
         height: 0
     },
-    value: 0,
-    velocity: 0,
     velocitys: [
         5.5,
         5,
@@ -149,27 +61,7 @@ const invaders = {
         1.5,
         1,
     ],
-    _invaders: [],
 
-    insert: function() {
-        for(let row = 0; row < this.invadersRows; row++) {
-            let invaderNumberPerRow = 0;
-            for(let col = 0; col < this.invadersCols; col++) {
-                const random =  getRandomInt(1, 2);
-                this._invaders.push({
-                    col,
-                    row,
-                    sprite: random,
-                    value: random * 10,
-                    size: this.size,
-                    posX: col == 0 ? this.gapH + (this.size / 2) : this._invaders[invaderNumberPerRow - 1].posX + this.size + this.gapH,
-                    posY: (row == 0 ? this.gapV + this.size: (row + 1) * (this.gapV + this.size)) + 120,
-                });
-                invaderNumberPerRow++;
-            }
-        }
-    },
-    
     draw: function() {
         let invaderNumber = 0;
         this._invaders.forEach(invader => {
@@ -213,13 +105,7 @@ const invaders = {
     }
 }
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 function start() {
-    // invaders.insert();
     game.addInvader();
     keyboardListener.subscribe(game.movePlayer)
     play()

@@ -2,6 +2,7 @@
 export default function createGame(){
     const state = {
         playing: true,
+        muted: false,
         screen: {
             width: 700,
             height: 700,
@@ -21,14 +22,15 @@ export default function createGame(){
         },
         invaders: {
             direction: 'left',
+            invaderBlock: {},
             options: {
                 size: 50,
                 rows: 3,
-                cols: 5,
+                cols: 8,
                 gapV: 20,
-                gapH: 50,
+                gapH: 10,
                 value: 0,
-                velocity: 0,
+                velocity: 2.5,
             },
             list: []
         },
@@ -41,6 +43,15 @@ export default function createGame(){
 
     function setState(newState){
         Object.assign(state, newState)
+    }
+
+    function setInvadersBlock() {
+        const invadersList = state.invaders.list;
+        state.invaders.invaderBlock.posX = Math.min(...invadersList.map(({posX}) => posX));
+        state.invaders.invaderBlock.posY = Math.min(...invadersList.map(({posY}) => posY));
+        state.invaders.invaderBlock.width = Math.max(...invadersList.map(({posX}) => posX)) - Math.min(...invadersList.map(({posX}) => posX)) + state.invaders.options.size;
+        state.invaders.invaderBlock.height = Math.max(...invadersList.map(({posY}) => posY)) - Math.min(...invadersList.map(({posY}) => posY)) + state.invaders.options.size;
+        console.log(invadersList)
     }
 
     function addInvader() {
@@ -107,8 +118,8 @@ export default function createGame(){
         const shot = state.shots.list[shotId];
         for(const invaderId in state.invaders.list){
             const invader = state.invaders.list[invaderId];            
-            let invaderBottom = invader.posY + state.invaders.options.size;
-            let invaderRight = invader.posX + state.invaders.options.size;
+            const invaderBottom = invader.posY + state.invaders.options.size;
+            const invaderRight = invader.posX + state.invaders.options.size;
             
             if (invaderBottom > shot.posY && invader.posY < shot.posY &&
                 invaderRight > shot.posX && invader.posX < shot.posX) {
@@ -125,9 +136,6 @@ export default function createGame(){
     }
 
     function update(){
-        // player.draw();
-        // shot.draw();
-        // invaders.draw();
         // document.querySelector('#score').innerHTML = status.score;
     }
     
@@ -160,6 +168,7 @@ export default function createGame(){
         movePlayer,
         setState,
         removeShot,
-        checkForInvaderCollision
+        checkForInvaderCollision,
+        setInvadersBlock
     }
 }
