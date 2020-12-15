@@ -1,6 +1,11 @@
+@font-face {
+    font-family: Arcade;
+    src: url('../assets/font/ARCADE_N.TTF');
+  }
+
 * {
     margin: 0;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: Arcade, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -11,9 +16,43 @@ body {
     justify-content: center;
 }
 
-#game {
+#game-info img {
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+}
+
+#game-info .content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    color: white;
+    transform: translateX(-50%);
+}
+
+#game-info .content p {
+    padding: 0 4em;
+    font-weight: 100;
+    line-height: 1.5em;
+    text-align: justify;
+    text-transform: uppercase;
+}
+
+#game-info .content button {
+    padding: .5em 2em;
+    margin: 2em 0;
+    border: 0;
+    border-radius: 2em;
+    text-transform: uppercase;
+}
+
+#game, #game-info {
     width: 700px;
     height: 700px;
+    position: relative;
 }
 
 #info {

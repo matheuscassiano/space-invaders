@@ -2,9 +2,11 @@ const screen = document.querySelector("#space-invaders");
 const context = screen.getContext("2d");
 
 const status = {
-    play: false,
+    play: true,
     score: 0,
     mute: false,
+    screen: 'start',
+    frames: 0,
 }
 
 const sounds = {
@@ -12,10 +14,37 @@ const sounds = {
     shotSound: new Audio('./src/assets/audio/shot.mp3'),
     explosionSound: new Audio('./src/assets/audio/explosion.mp3'),
 }
-
 document.addEventListener('keydown', e => actions(e.key));
-document.querySelector('#pause').addEventListener('click', pause);
-document.querySelector('#mute').addEventListener('click', mute);
+
+function buttons() {
+    const pauseButton = document.querySelector('#pause');
+    const reloadButton = document.querySelector('#reload');
+    const muteButton = document.querySelector('#mute');
+
+    function play() {
+        status.screen = 'play';
+        pauseButton.removeEventListener('click', play);
+    }
+
+    switch (status.screen) {
+        case 'start':
+            pauseButton.addEventListener('click', play);
+            reloadButton.addEventListener('click', () => document.location.reload());
+            break;
+    
+        case 'play':
+            pauseButton.addEventListener('click', pause);
+            muteButton.addEventListener('click', mute);
+            reloadButton.addEventListener('click', () => document.location.reload());
+            break;
+    
+        case 'game-over':
+            pauseButton.addEventListener('click', () => document.location.reload());
+            reloadButton.addEventListener('click', () => document.location.reload());
+            break;
+    }
+}
+
 
 function pause() {
     status.play = !status.play
@@ -26,14 +55,47 @@ function mute() {
     status.mute = !status.mute;
 }
 
+function blink() {
+    if (status.frames <= 20) {
+        text.color = 'white';
+    } else if (status.frames > 20 && status.frames < 40) {
+        text.color = 'transparent';
+    } else if (status.frames >= 40) {
+        status.frames = 0
+    }
+}
+
 function draw(screen, context) {
     screen.width = 700;
     screen.height = 700;
     context.drawImage(background, 0, 0, screen.width, screen.height);
+    let messageText = 'Start';
+    let characters = messageText.length;
+
+    context.fillStyle = text.color;
+    switch (status.screen) {
+        case 'start':
+            context.font = `${text.size}px "${text.font}"`;
+            context.fillText(messageText, (screen.width / 2) - (characters * text.size / 2), (screen.height / 2) - (text.size / 2));
+            break;
+
+        case 'play':
+            player.draw();
+            shot.draw();
+            invaders.draw();
+            break;
+
+        case 'game-over':
+            messageText = 'Game Over';
+            characters = messageText.length;
+
+            context.font = `${text.size}px "${text.font}"`;
+            context.fillText(messageText, (screen.width / 2) - (characters * text.size / 2), (screen.height / 2) - (text.size / 2));
+            break;
+    }
 }
 
 function play() {
-    draw(screen, context);
     update();
     sound();
     if(status.play){
@@ -42,14 +104,15 @@ function play() {
 }
 
 function update(){
-    player.draw();
-    shot.draw();
-    invaders.draw();
+    buttons();
+    draw(screen, context);
     document.querySelector('#score').innerHTML = status.score;
+    status.frames++;
+    blink()
 }
 
 function sound() {
-    if(status.play){
+    if(status.play && status.screen === 'play'){
         sounds.backgroundSound.play();
         sounds.backgroundSound.addEventListener('ended', () => {
             sounds.backgroundSound.play();
@@ -70,6 +133,7 @@ function sound() {
 }
 
 function actions(key) {
+    console.log(key)
     switch(key) {
         case 'ArrowLeft':
             if (player.posX > 20) {
@@ -85,6 +149,12 @@ function actions(key) {
             player.shot();
             break;
     }
+}
+
+const text = {
+    size: 30,
+    font: "Arcade",
+    color: 'white',
 }
 
 const player = {
@@ -227,7 +297,7 @@ const invaders = {
             this._invaderBlock.posY += 10;
             this._invaders.forEach(invader => invader.posY += 10);
         } else if ((this._invaderBlock.posY + this._invaderBlock.height) == player.posY) {
-            status.play = false;
+            status.screen = 'game-over';
         }
 
         if (this.direction === 'left') {
@@ -246,9 +316,8 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function start() {
+
+(function start() {
     invaders.insert();
     play()
-}
-
-start();
+})();
