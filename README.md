@@ -31,11 +31,9 @@ The project was developed using the following technologies:
 
     # The next step is start the server
     $ npx serve
-
-    # And to finish you will open the project on browser
-    http://localhost:5000
-
 ```
+And to finish you will open the project on browser:
+[http://localhost:5000](http://localhost:5000)
 
 ---
 
