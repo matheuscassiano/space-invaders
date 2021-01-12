@@ -1,9 +1,6 @@
-![Space Invaders](https://user-images.githubusercontent.com/42722140/104317054-279b3500-54bc-11eb-8112-5f8a065d68ca.png)
-# space-invaders
-Jogo Space Invader em JavaScript para trabalho de faculdade
 
-![Cover](https://user-images.githubusercontent.com/42722140/104124951-846ae400-5332-11eb-9581-aa16cc8640d7.png)
-# Menu Digital
+![Space Invaders](https://user-images.githubusercontent.com/42722140/104317054-279b3500-54bc-11eb-8112-5f8a065d68ca.png)
+# Space Invaders
 - [About](#-about)
 - [Technology Utilizated](#-technology-utilizated)
 - [How to download the project](#-how-to-download-the-project)
